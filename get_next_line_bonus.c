@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hzakharc < hzakharc@student.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/05 20:16:52 by hzakharc          #+#    #+#             */
-/*   Updated: 2024/07/05 20:16:53 by hzakharc         ###   ########.fr       */
+/*   Created: 2024/07/05 20:16:35 by hzakharc          #+#    #+#             */
+/*   Updated: 2024/07/05 20:21:40 by hzakharc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,28 +83,28 @@ static void	*free_buf(char **s_buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*s_buf;
+	static char	*s_buf[1024];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!s_buf)
-		s_buf = ft_strdup("");
-	if (!s_buf)
+	if (!s_buf[fd])
+		s_buf[fd] = ft_strdup("");
+	if (!s_buf[fd])
 		return (NULL);
-	if (read_data(fd, &s_buf) < 0)
+	if (read_data(fd, &s_buf[fd]) < 0)
 	{
-		free(s_buf);
-		s_buf = NULL;
+		free(s_buf[fd]);
+		s_buf[fd] = NULL;
 		return (NULL);
 	}
-	if (!*s_buf)
-		return (free_buf(&s_buf));
-	line = fill_the_line(&s_buf);
+	if (!*s_buf[fd])
+		return (free_buf(&s_buf[fd]));
+	line = fill_the_line(&s_buf[fd]);
 	if (!line)
 	{
-		free(s_buf);
-		s_buf = NULL;
+		free(s_buf[fd]);
+		s_buf[fd] = NULL;
 	}
 	return (line);
 }
